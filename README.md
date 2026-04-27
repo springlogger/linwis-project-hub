@@ -4,6 +4,11 @@
 
 The project is built with Nuxt and Vue, with a modular frontend structure for auth flows, dashboard pages, stores, middleware, and reusable UI styles.
 
+
+## Design
+
+https://www.figma.com/design/B64dEf5cYnlw4TQZYCjF12/Untitled?node-id=6-7109&p=f&t=DxGghmTR1C95as6s-0
+
 ## Tech Stack
 
 - Nuxt 4
