@@ -1,75 +1,48 @@
-# Nuxt Minimal Starter
+# linwis-project-hub
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+`linwis-project-hub` is a B2B SaaS dashboard for managing business workflows, project data, users, and operational insights in one focused interface.
 
-## Setup
+The project is built with Nuxt and Vue, with a modular frontend structure for auth flows, dashboard pages, stores, middleware, and reusable UI styles.
 
-Make sure to install dependencies:
+## Tech Stack
+
+- Nuxt 4
+- Vue 3
+- TypeScript
+- Tailwind CSS
+- Pinia
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+Start the development server:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+Build for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview the production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Project Structure
+
+- `app/pages` - application pages and routes
+- `app/features` - feature-specific modules and components
+- `app/stores` - Pinia stores
+- `app/middleware` - route guards
+- `app/assets` - global styles and static assets
+
