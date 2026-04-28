@@ -4,12 +4,32 @@
 
 :root {
   --color-bg: #121016;
+  --color-bg-secondary: #201d2a;
+  --color-bg-third: #1a1721;
   --color-surface: #121020;
+  --color-surface-hover: #2a2636;
+  --color-surface-dropdown: #1e1b2a;
   --color-text: #F1EFF5;
+  --color-text-light: #a099b5;
   --color-text-hover: #441f8e;
   --color-primary: #7045ba;
+  --color-primary-light: #7045ba2e;
   --color-secondary: #441f8e;
+  --color-third: #6b6382;
   --color-accent: #5f1ee2;
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-active: rgba(112, 69, 186, 0.35);
+  --color-border-active-strong: rgba(112, 69, 186, 0.4);
+  --color-primary-soft: rgba(112, 69, 186, 0.15);
+  --color-primary-badge: rgba(112, 69, 186, 0.2);
+  --color-red-soft: rgba(239, 68, 68, 0.12);
+  --color-primary-shadow: rgba(95, 30, 226, 0.35);
+  --color-primary-shadow-strong: rgba(95, 30, 226, 0.5);
+  --color-dropdown-shadow: rgba(0, 0, 0, 0.6);
+  --color-red: #ef4444;
+  --color-green: #22c98a;
+  --color-orange: #f59e0b;
+  --color-purple-soft: #a07de0;
 }
 
 @layer base {
@@ -46,4 +66,4 @@
   select:focus {
     outline: none;
   }
-};
+}

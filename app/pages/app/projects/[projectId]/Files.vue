@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 
 definePageMeta({
-  middleware: ['auth'],
+  middleware: ['guest'],
+  layout: 'workspace-layout',
 })
 
 </script>
 
 <template>
-  <div class="min-h-screen p-10">
-    Dashboard
+  <div>
+      ааа
   </div>
 </template>

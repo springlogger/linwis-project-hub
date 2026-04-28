@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ProjectHub — Tailwind Design Tokens</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0c12; --bg2: #16131f; --bg3: #1e1b2a;
+    --border: rgba(255,255,255,0.07);
+    --text: #f1eff5; --text2: #a099b5; --text3: #6b6382;
+    --primary: #7045ba; --accent: #5f1ee2;
+    --green: #22c98a; --yellow: #f59e0b; --red: #ef4444;
+  }
+  html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #2a2636; border-radius: 4px; }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 48px 32px 80px; }
+  .page-title { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; color: var(--text); margin-bottom: 4px; }
+  .page-sub { color: var(--text3); font-size: 14px; margin-bottom: 48px; }
+
+  h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section { margin-bottom: 48px; }
+
+  /* Code block */
+  .code-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .code-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .code-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.05em; }
+  .copy-btn { font-size: 11px; color: var(--text3); background: transparent; border: 1px solid var(--border); border-radius: 5px; padding: 3px 9px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .copy-btn:hover { border-color: var(--primary); color: var(--text2); }
+  pre { padding: 16px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; color: #c9c4e0; }
+
+  /* Color swatches */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .swatch { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
+  .swatch-dot { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; }
+  .swatch-info { min-width: 0; }
+  .swatch-name { font-size: 11px; font-weight: 600; color: var(--text2); white-space: nowrap; }
+  .swatch-hex { font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+
+  /* Utility table */
+  .util-table { width: 100%; border-collapse: collapse; }
+  .util-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .util-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; font-size: 12px; }
+  .util-table tr:last-child td { border-bottom: none; }
+  .util-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-family: 'JetBrains Mono', monospace; background: rgba(112,69,186,0.15); color: #c4aeff; white-space: nowrap; }
+  .pills { display: flex; flex-wrap: wrap; gap: 4px; }
+  .desc { color: var(--text3); font-size: 11px; margin-top: 2px; }
+
+  /* Component previews */
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .preview-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 80px; }
+
+  /* Demo elements */
+  .demo-card { background: #1a1721; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px; width: 100%; }
+  .demo-btn-primary { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #7045ba 0%, #5f1ee2 100%); border: none; color: #fff; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; box-shadow: 0 2px 12px rgba(95,30,226,0.35); }
+  .demo-btn-secondary { display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; height: 34px; border-radius: 8px; background: #201d2a; border: 1px solid rgba(255,255,255,0.07); color: #a099b5; font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; }
+  .demo-input { width: 100%; padding: 0 12px; height: 36px; background: #201d2a; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; color: #f1eff5; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; }
+  .demo-input:focus { border-color: #7045ba; box-shadow: 0 0 0 3px rgba(112,69,186,0.2); }
+  .demo-badge-high { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(239,68,68,0.15); color: #ef4444; }
+  .demo-badge-med  { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .demo-badge-low  { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: rgba(34,201,138,0.15); color: #22c98a; }
+  .demo-sidebar-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; font-size: 13px; font-weight: 600; background: rgba(112,69,186,0.18); color: #f1eff5; width: 100%; border: none; font-family: 'Inter', sans-serif; cursor: pointer; }
+  .demo-sidebar-item-inactive { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; font-size: 13px; font-weight: 400; background: transparent; color: #6b6382; width: 100%; border: none; font-family: 'Inter', sans-serif; cursor: pointer; }
+
+  .token-kw { color: #9b6cf7; }
+  .token-str { color: #86e0a0; }
+  .token-num { color: #f9c74f; }
+  .token-key { color: #c9c4e0; }
+  .token-comment { color: #4a4560; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-title">ProjectHub — Tailwind Design Tokens</div>
+  <div class="page-sub">tailwind.config.ts · Nuxt 3 + Vue 3 + Tailwind CSS 3.x</div>
+
+  <!-- ── TAILWIND CONFIG ── -->
+  <div class="section">
+    <h2>tailwind.config.ts — полный файл</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-label">tailwind.config.ts</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+<pre id="main-config"><span class="token-kw">import</span> <span class="token-key">type</span> { Config } <span class="token-kw">from</span> <span class="token-str">'tailwindcss'</span>
+
+<span class="token-kw">export default</span> {
+  content: [
+    <span class="token-str">'./components/**/*.{vue,ts}'</span>,
+    <span class="token-str">'./layouts/**/*.vue'</span>,
+    <span class="token-str">'./pages/**/*.vue'</span>,
+    <span class="token-str">'./app.vue'</span>,
+  ],
+  theme: {
+    extend: {
+
+      <span class="token-comment">// ── Colors ──────────────────────────────────────────</span>
+      colors: {
+        brand: {
+          primary:   <span class="token-str">'#7045ba'</span>,
+          secondary: <span class="token-str">'#441f8e'</span>,
+          accent:    <span class="token-str">'#5f1ee2'</span>,
+        },
+        surface: {
+          base:      <span class="token-str">'#121016'</span>,  <span class="token-comment">// --bg   page background</span>
+          elevated:  <span class="token-str">'#1a1721'</span>,  <span class="token-comment">// --bg2  sidebar, cards, topbar</span>
+          overlay:   <span class="token-str">'#201d2a'</span>,  <span class="token-comment">// --bg3  inputs, badges bg, hover fill</span>
+          hover:     <span class="token-str">'#2a2636'</span>,  <span class="token-comment">// deeper hover fill for buttons</span>
+          dropdown:  <span class="token-str">'#1e1b2a'</span>,  <span class="token-comment">// dropdown / popover panels</span>
+        },
+        content: {
+          primary:   <span class="token-str">'#f1eff5'</span>,  <span class="token-comment">// --text  headings, values</span>
+          secondary: <span class="token-str">'#a099b5'</span>,  <span class="token-comment">// --text2 labels, secondary text</span>
+          muted:     <span class="token-str">'#6b6382'</span>,  <span class="token-comment">// --text3 placeholders, meta</span>
+        },
+        border: {
+          base:   <span class="token-str">'rgba(255,255,255,0.07)'</span>,
+          active: <span class="token-str">'rgba(112,69,186,0.35)'</span>,
+          focus:  <span class="token-str">'#7045ba'</span>,
+        },
+        status: {
+          success: <span class="token-str">'#22c98a'</span>,
+          warning: <span class="token-str">'#f59e0b'</span>,
+          danger:  <span class="token-str">'#ef4444'</span>,
+          info:    <span class="token-str">'#3b82f6'</span>,
+        },
+      },
+
+      <span class="token-comment">// ── Border Radius ────────────────────────────────────</span>
+      borderRadius: {
+        sm:   <span class="token-str">'4px'</span>,   <span class="token-comment">// badges, small tags</span>
+        md:   <span class="token-str">'6px'</span>,   <span class="token-comment">// small buttons, filter chips</span>
+        lg:   <span class="token-str">'8px'</span>,   <span class="token-comment">// buttons, inputs, icon buttons</span>
+        xl:   <span class="token-str">'10px'</span>,  <span class="token-comment">// upgrade card</span>
+        '2xl':<span class="token-str">'12px'</span>,  <span class="token-comment">// metric cards, kanban section, panels</span>
+        '3xl':<span class="token-str">'16px'</span>,  <span class="token-comment">// modal dialogs (future)</span>
+        full: <span class="token-str">'9999px'</span>, <span class="token-comment">// avatars, pill counters</span>
+      },
+
+      <span class="token-comment">// ── Box Shadow ───────────────────────────────────────</span>
+      boxShadow: {
+        'card':      <span class="token-str">'0 1px 3px rgba(0,0,0,0.4)'</span>,
+        'card-hover':<span class="token-str">'0 4px 16px rgba(0,0,0,0.5)'</span>,
+        'btn-primary':<span class="token-str">'0 2px 12px rgba(95,30,226,0.35)'</span>,
+        'btn-primary-hover': <span class="token-str">'0 4px 20px rgba(95,30,226,0.5)'</span>,
+        'glow':      <span class="token-str">'0 0 16px rgba(95,30,226,0.4)'</span>,
+        'dropdown':  <span class="token-str">'0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(112,69,186,0.15)'</span>,
+        'focus':     <span class="token-str">'0 0 0 3px rgba(112,69,186,0.2)'</span>,
+        'none':      <span class="token-str">'none'</span>,
+      },
+
+      <span class="token-comment">// ── Spacing ──────────────────────────────────────────</span>
+      <span class="token-comment">// Tailwind default 4px scale is used. Key semantic values:</span>
+      <span class="token-comment">// 1 = 4px, 2 = 8px, 3 = 12px, 4 = 16px, 5 = 20px, 6 = 24px</span>
+      <span class="token-comment">// Component padding: cards p-4, sidebar px-3 py-1, topbar px-6</span>
+      <span class="token-comment">// Gap: metric-cards gap-3, sections gap-4, rows gap-6</span>
+
+      <span class="token-comment">// ── Font Family ──────────────────────────────────────</span>
+      fontFamily: {
+        sans: [<span class="token-str">'Inter'</span>, <span class="token-str">'system-ui'</span>, <span class="token-str">'sans-serif'</span>],
+        mono: [<span class="token-str">'JetBrains Mono'</span>, <span class="token-str">'Fira Code'</span>, <span class="token-str">'monospace'</span>],
+      },
+
+      <span class="token-comment">// ── Font Size ────────────────────────────────────────</span>
+      fontSize: {
+        <span class="token-str">'2xs'</span>: [<span class="token-str">'10px'</span>, { lineHeight: <span class="token-str">'14px'</span> }],  <span class="token-comment">// badge labels, timestamps</span>
+        xs:   [<span class="token-str">'11px'</span>, { lineHeight: <span class="token-str">'16px'</span> }],  <span class="token-comment">// meta, sub-labels</span>
+        sm:   [<span class="token-str">'12px'</span>, { lineHeight: <span class="token-str">'18px'</span> }],  <span class="token-comment">// card labels, table cells</span>
+        base: [<span class="token-str">'13px'</span>, { lineHeight: <span class="token-str">'20px'</span> }],  <span class="token-comment">// nav items, body text</span>
+        md:   [<span class="token-str">'14px'</span>, { lineHeight: <span class="token-str">'22px'</span> }],  <span class="token-comment">// section headings</span>
+        lg:   [<span class="token-str">'15px'</span>, { lineHeight: <span class="token-str">'24px'</span> }],  <span class="token-comment">// logo</span>
+        xl:   [<span class="token-str">'20px'</span>, { lineHeight: <span class="token-str">'28px'</span> }],  <span class="token-comment">// page title</span>
+        <span class="token-str">'2xl'</span>:[<span class="token-str">'26px'</span>, { lineHeight: <span class="token-str">'32px'</span> }],  <span class="token-comment">// metric values</span>
+      },
+
+      <span class="token-comment">// ── Transitions ──────────────────────────────────────</span>
+      transitionDuration: {
+        fast:   <span class="token-str">'120ms'</span>,
+        normal: <span class="token-str">'150ms'</span>,
+        slow:   <span class="token-str">'300ms'</span>,
+      },
+
+    },
+  },
+  plugins: [],
+} <span class="token-kw">satisfies</span> Config</pre>
+    </div>
+  </div>
+
+  <!-- ── COLOR PALETTE ── -->
+  <div class="section">
+    <h2>Color Palette</h2>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-dot" style="background:#121016;border:1px solid rgba(255,255,255,0.1)"></div><div class="swatch-info"><div class="swatch-name">surface.base</div><div class="swatch-hex">#121016</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#1a1721"></div><div class="swatch-info"><div class="swatch-name">surface.elevated</div><div class="swatch-hex">#1a1721</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#201d2a"></div><div class="swatch-info"><div class="swatch-name">surface.overlay</div><div class="swatch-hex">#201d2a</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#2a2636"></div><div class="swatch-info"><div class="swatch-name">surface.hover</div><div class="swatch-hex">#2a2636</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#7045ba"></div><div class="swatch-info"><div class="swatch-name">brand.primary</div><div class="swatch-hex">#7045ba</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#441f8e"></div><div class="swatch-info"><div class="swatch-name">brand.secondary</div><div class="swatch-hex">#441f8e</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#5f1ee2"></div><div class="swatch-info"><div class="swatch-name">brand.accent</div><div class="swatch-hex">#5f1ee2</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#f1eff5"></div><div class="swatch-info"><div class="swatch-name">content.primary</div><div class="swatch-hex">#f1eff5</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#a099b5"></div><div class="swatch-info"><div class="swatch-name">content.secondary</div><div class="swatch-hex">#a099b5</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#6b6382"></div><div class="swatch-info"><div class="swatch-name">content.muted</div><div class="swatch-hex">#6b6382</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#22c98a"></div><div class="swatch-info"><div class="swatch-name">status.success</div><div class="swatch-hex">#22c98a</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#f59e0b"></div><div class="swatch-info"><div class="swatch-name">status.warning</div><div class="swatch-hex">#f59e0b</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#ef4444"></div><div class="swatch-info"><div class="swatch-name">status.danger</div><div class="swatch-hex">#ef4444</div></div></div>
+      <div class="swatch"><div class="swatch-dot" style="background:#3b82f6"></div><div class="swatch-info"><div class="swatch-name">status.info</div><div class="swatch-hex">#3b82f6</div></div></div>
+    </div>
+  </div>
+
+  <!-- ── UTILITY CLASSES ── -->
+  <div class="section">
+    <h2>Component Utility Classes</h2>
+
+    <!-- Card -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Card</div>
+      <div class="preview-grid" style="grid-template-columns:1fr">
+        <div class="preview-box"><div class="demo-card">
+          <div style="font-size:11px;color:#6b6382;margin-bottom:4px">In Progress</div>
+          <div style="font-size:26px;font-weight:700;letter-spacing:-0.04em">16</div>
+          <div style="font-size:11px;color:#6b6382">38% of total</div>
+        </div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="token-comment">&lt;!-- Metric / content card --&gt;</span>
+&lt;div class=<span class="token-str">"bg-surface-elevated border border-border-base rounded-2xl p-4"</span>&gt;
+  <span class="token-comment">&lt;!-- hover state --&gt;</span>
+&lt;div class=<span class="token-str">"bg-surface-elevated border border-border-base rounded-2xl p-4
+            transition-all duration-normal hover:border-border-active hover:shadow-card-hover"</span>&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Button Primary -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Button — Primary</div>
+      <div class="preview-box" style="margin-bottom:10px;gap:12px">
+        <button class="demo-btn-primary">+ New Task</button>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>&lt;button class=<span class="token-str">"inline-flex items-center gap-1.5 px-3.5 h-[34px]
+               rounded-lg border-none text-white text-sm font-semibold
+               bg-gradient-to-br from-brand-primary to-brand-accent
+               shadow-btn-primary cursor-pointer
+               transition-all duration-normal
+               hover:-translate-y-px hover:shadow-btn-primary-hover hover:opacity-90
+               active:translate-y-0 active:opacity-100"</span>&gt;
+  + New Task
+&lt;/button&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Button Secondary -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Button — Secondary / Ghost</div>
+      <div class="preview-box" style="margin-bottom:10px">
+        <button class="demo-btn-secondary">Share</button>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>&lt;button class=<span class="token-str">"inline-flex items-center gap-1.5 px-3 h-[34px]
+               rounded-lg bg-surface-overlay border border-border-base
+               text-content-secondary text-sm font-medium cursor-pointer
+               transition-all duration-normal
+               hover:bg-surface-hover hover:border-border-active hover:text-content-primary
+               active:scale-95"</span>&gt;
+  Share
+&lt;/button&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Sidebar item -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Sidebar Nav Item</div>
+      <div class="preview-box" style="gap:6px;flex-direction:column;margin-bottom:10px">
+        <button class="demo-sidebar-item" style="max-width:200px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Dashboard
+        </button>
+        <button class="demo-sidebar-item-inactive" style="max-width:200px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Projects
+        </button>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template + :class binding</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>&lt;button
+  :class=<span class="token-str">"[
+    'relative flex items-center gap-2.5 w-full px-2.5 py-2 rounded-[7px]',
+    'border-none text-sm cursor-pointer transition-all duration-fast',
+    'font-sans text-left',
+    isActive
+      ? 'bg-brand-primary/[0.18] text-content-primary font-semibold'
+      : 'bg-transparent text-content-muted font-normal hover:bg-white/[0.04] hover:text-content-secondary',
+  ]"</span>
+&gt;
+  <span class="token-comment">&lt;!-- active indicator --&gt;</span>
+  &lt;span v-if=<span class="token-str">"isActive"</span>
+    class=<span class="token-str">"absolute left-0 top-[20%] bottom-[20%] w-[3px]
+            rounded-r-sm bg-brand-primary -translate-x-2.5"</span> /&gt;
+  &lt;Icon :path=<span class="token-str">"item.icon"</span> /&gt;
+  {{ item.label }}
+&lt;/button&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Task Card -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Task Card (Kanban)</div>
+      <div class="preview-box" style="margin-bottom:10px">
+        <div class="demo-card" style="max-width:200px">
+          <div style="margin-bottom:7px">
+            <div style="font-size:12px;font-weight:500;color:#f1eff5;margin-bottom:5px">UI Design</div>
+            <span class="demo-badge-high">High</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:5px">
+              <div style="width:18px;height:18px;border-radius:50%;background:#7045ba;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff">BS</div>
+              <span style="font-size:10px;color:#6b6382">Brooklyn</span>
+            </div>
+            <span style="font-size:10px;color:#6b6382">May 16</span>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>&lt;div class=<span class="token-str">"bg-surface-base border border-border-base rounded-lg p-3
+            cursor-pointer transition-all duration-normal
+            hover:bg-white/[0.04] hover:-translate-y-px"</span>&gt;
+  &lt;div class=<span class="token-str">"mb-1.5"</span>&gt;
+    &lt;p class=<span class="token-str">"text-sm font-medium text-content-primary leading-snug mb-1.5"</span>&gt;
+      {{ task.title }}
+    &lt;/p&gt;
+    &lt;PriorityBadge :priority=<span class="token-str">"task.priority"</span> /&gt;
+  &lt;/div&gt;
+  &lt;div class=<span class="token-str">"flex items-center justify-between"</span>&gt;
+    &lt;Avatar :name=<span class="token-str">"task.assignee"</span> :size=<span class="token-str">"18"</span> /&gt;
+    &lt;span class=<span class="token-str">"text-2xs text-content-muted"</span>&gt;{{ task.due }}&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Table Row -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Table Row</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="token-comment">&lt;!-- Table wrapper --&gt;</span>
+&lt;table class=<span class="token-str">"w-full border-collapse"</span>&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th class=<span class="token-str">"text-left text-xs font-bold tracking-wider uppercase
+                 text-content-muted px-3 py-2 border-b border-border-base"</span>&gt;
+        Task
+      &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr v-for=<span class="token-str">"row in rows"</span> :key=<span class="token-str">"row.id"</span>
+        class=<span class="token-str">"border-b border-white/[0.04] transition-colors duration-fast
+               hover:bg-white/[0.02] cursor-pointer"</span>&gt;
+      &lt;td class=<span class="token-str">"px-3 py-2.5 text-sm text-content-primary"</span>&gt;
+        {{ row.title }}
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Input / Search</div>
+      <div class="preview-box" style="margin-bottom:10px">
+        <input class="demo-input" placeholder="Search..." style="max-width:240px" />
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue template</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>&lt;input
+  type=<span class="token-str">"text"</span>
+  placeholder=<span class="token-str">"Search..."</span>
+  class=<span class="token-str">"w-full h-9 px-3
+          bg-surface-overlay border border-border-base rounded-lg
+          text-base text-content-primary placeholder:text-content-muted
+          outline-none transition-all duration-normal
+          focus:border-brand-primary focus:shadow-focus"</span>
+/&gt;</pre>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div style="margin-bottom:28px">
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px;">Priority Badges</div>
+      <div class="preview-box" style="gap:8px;margin-bottom:10px">
+        <span class="demo-badge-high">High</span>
+        <span class="demo-badge-med">Medium</span>
+        <span class="demo-badge-low">Low</span>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-label">Vue component — PriorityBadge.vue</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="token-comment">&lt;!-- PriorityBadge.vue --&gt;</span>
+&lt;template&gt;
+  &lt;span :class=<span class="token-str">"badgeClass"</span>&gt;{{ priority }}&lt;/span&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=<span class="token-str">"ts"</span>&gt;
+const props = defineProps&lt;{ priority: <span class="token-str">'High'</span> | <span class="token-str">'Medium'</span> | <span class="token-str">'Low'</span> }&gt;()
+
+const badgeClass = computed(() =&gt; {
+  const base = <span class="token-str">'inline-flex items-center px-1.5 py-0.5 rounded text-2xs font-semibold tracking-wide capitalize'</span>
+  return {
+    High:   base + <span class="token-str">' bg-status-danger/15 text-status-danger'</span>,
+    Medium: base + <span class="token-str">' bg-status-warning/15 text-status-warning'</span>,
+    Low:    base + <span class="token-str">' bg-status-success/15 text-status-success'</span>,
+  }[props.priority]
+})
+&lt;/script&gt;</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── CSS VARIABLES (for globals.css) ── -->
+  <div class="section">
+    <h2>globals.css — CSS Custom Properties</h2>
+    <div class="code-block">
+      <div class="code-header"><span class="code-label">assets/css/globals.css</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="token-key">@tailwind</span> base;
+<span class="token-key">@tailwind</span> components;
+<span class="token-key">@tailwind</span> utilities;
+
+<span class="token-key">@layer</span> base {
+  :root {
+    <span class="token-comment">/* Used for non-Tailwind inline contexts */</span>
+    --color-base:      <span class="token-str">theme('colors.surface.base')</span>;
+    --color-elevated:  <span class="token-str">theme('colors.surface.elevated')</span>;
+    --color-overlay:   <span class="token-str">theme('colors.surface.overlay')</span>;
+    --color-primary:   <span class="token-str">theme('colors.brand.primary')</span>;
+    --color-accent:    <span class="token-str">theme('colors.brand.accent')</span>;
+  }
+
+  html { <span class="token-key">@apply</span> bg-surface-base text-content-primary font-sans antialiased; }
+  ::selection { <span class="token-key">@apply</span> bg-brand-primary/30 text-content-primary; }
+
+  ::-webkit-scrollbar       { <span class="token-key">@apply</span> w-1 h-1; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { <span class="token-key">@apply</span> bg-surface-overlay rounded-full; }
+}</pre>
+    </div>
+  </div>
+
+  <!-- ── NUXT CONFIG SNIPPET ── -->
+  <div class="section">
+    <h2>nuxt.config.ts — подключение шрифтов</h2>
+    <div class="code-block">
+      <div class="code-header"><span class="code-label">nuxt.config.ts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="token-kw">export default</span> defineNuxtConfig({
+  modules: [<span class="token-str">'@nuxtjs/tailwindcss'</span>],
+  css: [<span class="token-str">'~/assets/css/globals.css'</span>],
+  app: {
+    head: {
+      link: [{
+        rel: <span class="token-str">'stylesheet'</span>,
+        href: <span class="token-str">'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'</span>
+      }]
+    }
+  }
+})</pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.borderColor = '#22c98a';
+    btn.style.color = '#22c98a';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.borderColor = ''; btn.style.color = ''; }, 1800);
+  });
+}
+</script>
+</body>
+</html>

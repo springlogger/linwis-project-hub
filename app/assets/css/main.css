@@ -2,6 +2,74 @@
 
 /* Слои нужно на тот случай, если где-то нам нужно будет перебить стиль из слоя внутри конкретного элемента */
 @layer components {
+  .app-panel {
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background-color: var(--color-bg-third);
+  }
+
+  .app-panel-title {
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .app-toolbar-button {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background-color: var(--color-bg-secondary);
+    padding: 0.375rem 0.75rem;
+
+    color: var(--color-text-light);
+    font-size: 0.75rem;
+    line-height: 1rem;
+
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .app-toolbar-button:hover {
+    border-color: var(--color-border-active);
+    background-color: var(--color-surface-hover);
+    color: var(--color-text-light);
+  }
+
+  .app-toolbar-button--compact {
+    padding: 0.375rem 0.625rem;
+    color: var(--color-third);
+    font-size: 0.6875rem;
+  }
+
+  .app-link-button {
+    color: var(--color-primary);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .app-link-button:hover {
+    text-decoration: underline;
+  }
+
+  .app-status-badge {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+    padding: 0.0625rem 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    line-height: 1rem;
+    text-transform: capitalize;
+  }
+
   .app-input {
     background-color: var(--color-text);
     color: var(--color-bg);

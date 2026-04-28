@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ProjectHub — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #121016;
+    --bg2: #1a1721;
+    --bg3: #201d2a;
+    --border: rgba(255,255,255,0.07);
+    --text: #f1eff5;
+    --text2: #a099b5;
+    --text3: #6b6382;
+    --primary: #7045ba;
+    --primary-light: rgba(112,69,186,0.18);
+    --secondary: #441f8e;
+    --accent: #5f1ee2;
+    --green: #22c98a;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+  }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--bg3) transparent; }
+
+  /* Header interactive elements */
+  .hdr-btn {
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .hdr-btn:hover {
+    background: #2a2636 !important;
+    border-color: rgba(112,69,186,0.35) !important;
+    color: var(--text) !important;
+  }
+  .hdr-icon-btn {
+    transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  }
+  .hdr-icon-btn:hover {
+    background: #2a2636 !important;
+    border-color: rgba(112,69,186,0.35) !important;
+    transform: translateY(-1px);
+  }
+  .hdr-primary-btn {
+    transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
+  }
+  .hdr-primary-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(95,30,226,0.5) !important;
+  }
+  .hdr-primary-btn:active { transform: translateY(0); opacity: 1; }
+  .profile-btn {
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .profile-btn:hover {
+    background: #2a2636 !important;
+    border-color: rgba(112,69,186,0.4) !important;
+  }
+  /* Dropdown */
+  .profile-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    width: 220px;
+    background: #1e1b2a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(112,69,186,0.15);
+    z-index: 999;
+    animation: dropIn 0.15s ease;
+  }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 7px; cursor: pointer;
+    font-size: 13px; color: var(--text2);
+    transition: background 0.12s, color 0.12s;
+    border: none; background: transparent; width: 100%;
+    font-family: 'Inter', sans-serif; text-align: left;
+  }
+  .dropdown-item:hover { background: rgba(112,69,186,0.15); color: var(--text); }
+  .dropdown-item.danger:hover { background: rgba(239,68,68,0.12); color: #ef4444; }
+  .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+/* ── Ring chart ── */
+function RingChart({ pct, color, size = 44, stroke = 4 }) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ;
+  return (
+    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* ── Sparkline ── */
+function Spark({ data, color }) {
+  const W = 72, H = 32;
+  const min = Math.min(...data), max = Math.max(...data);
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - ((v - min) / (max - min + 1)) * H;
+    return `${x},${y}`;
+  }).join(' ');
+  return (
+    <svg width={W} height={H} style={{ overflow: 'visible' }}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/* ── Avatar ── */
+function Avatar({ name, size = 24, color }) {
+  const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2);
+  const palette = ['#7045ba','#5f1ee2','#441f8e','#3b5fe2','#1e7a8e'];
+  const c = color || palette[name.charCodeAt(0) % palette.length];
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%', background: c,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: size * 0.38, fontWeight: 600, color: '#fff', flexShrink: 0,
+      letterSpacing: '-0.01em',
+    }}>{initials}</div>
+  );
+}
+
+/* ── Badge ── */
+function Badge({ label, variant = 'default' }) {
+  const map = {
+    high:        { bg: 'rgba(239,68,68,0.15)',   color: '#ef4444' },
+    medium:      { bg: 'rgba(245,158,11,0.15)',  color: '#f59e0b' },
+    low:         { bg: 'rgba(34,201,138,0.15)',  color: '#22c98a' },
+    completed:   { bg: 'rgba(34,201,138,0.15)',  color: '#22c98a' },
+    'in progress':{ bg: 'rgba(95,30,226,0.2)',   color: '#9b6cf7' },
+    review:      { bg: 'rgba(245,158,11,0.15)',  color: '#f59e0b' },
+    default:     { bg: 'rgba(112,69,186,0.2)',   color: '#a07de0' },
+  };
+  const s = map[variant.toLowerCase()] || map.default;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', padding: '2px 7px',
+      borderRadius: 4, fontSize: 10, fontWeight: 600, letterSpacing: '0.02em',
+      background: s.bg, color: s.color, textTransform: 'capitalize', whiteSpace: 'nowrap',
+    }}>{label}</span>
+  );
+}
+
+/* ── DATA ── */
+const KANBAN = {
+  todo: [
+    { id: 1, title: 'Research & Analysis', priority: 'High', assignee: 'Jane Cooper', due: 'May 20' },
+    { id: 2, title: 'Create Wireframes', priority: 'Medium', assignee: 'Esther Howard', due: 'May 21' },
+    { id: 3, title: 'Competitor Research', priority: 'Low', assignee: 'Cameron W.', due: 'May 23' },
+  ],
+  inprogress: [
+    { id: 4, title: 'UI Design', priority: 'High', assignee: 'Brooklyn S.', due: 'May 16' },
+    { id: 5, title: 'Frontend Dev', priority: 'High', assignee: 'Kristin Watson', due: 'May 22' },
+    { id: 6, title: 'CMS Integration', priority: 'Medium', assignee: 'Guy Hawkins', due: 'May 25' },
+  ],
+  review: [
+    { id: 7, title: 'User Feedback', priority: 'Medium', assignee: 'Ralph Edwards', due: 'May 17' },
+    { id: 8, title: 'Perf. Testing', priority: 'Medium', assignee: 'Dianne Russell', due: 'May 19' },
+  ],
+  done: [
+    { id: 9, title: 'Project Kickoff', priority: 'Low', assignee: 'Leslie A.', due: 'May 10' },
+    { id: 10, title: 'Info Architecture', priority: 'Low', assignee: 'Theresa Webb', due: 'May 11' },
+  ],
+};
+
+const TIMELINE = [
+  { name: 'Research & Analysis', start: 0,  width: 28, color: '#7045ba' },
+  { name: 'UI Design',           start: 15, width: 36, color: '#5f1ee2' },
+  { name: 'Frontend Dev',        start: 28, width: 40, color: '#441f8e' },
+  { name: 'CMS Integration',     start: 40, width: 30, color: '#7045ba' },
+  { name: 'Testing',             start: 58, width: 22, color: '#3b5fe2' },
+  { name: 'Launch',              start: 78, width: 18, color: '#5f1ee2' },
+];
+
+const ACTIVITY = [
+  { user: 'Kristin Watson',   action: 'completed',  target: 'UI Design',       tag: 'completed',    time: '2h ago' },
+  { user: 'Brooklyn Simmons', action: 'moved to',   target: 'In Progress',     tag: 'in progress',  time: '3h ago' },
+  { user: 'Ralph Edwards',    action: 'commented on',target: 'User Feedback',  tag: 'review',       time: '5h ago' },
+  { user: 'Jane Cooper',      action: 'created',    target: 'Content Strategy',tag: 'default',      time: '1d ago' },
+];
+
+const PROJECTS = [
+  { name: 'Acme Website Redesign', progress: 57, tasks: 42, color: '#7045ba' },
+  { name: 'Mobile App MVP',        progress: 34, tasks: 28, color: '#5f1ee2' },
+  { name: 'Brand Identity',        progress: 81, tasks: 15, color: '#22c98a' },
+];
+
+const NAV = [
+  { label: 'Dashboard',     icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',                                                                                                                                        active: true  },
+  { label: 'Projects',      icon: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z',                                                                                                           active: false },
+  { label: 'Tasks',         icon: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7',                                                                                                                 active: false },
+  { label: 'Calendar',      icon: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',                                                                                          active: false },
+  { label: 'Time Tracking', icon: 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 6v6l4 2',                                                                                                     active: false },
+  { label: 'Reports',       icon: 'M18 20V10M12 20V4M6 20v-6',                                                                                                                                                               active: false },
+  { label: 'Team',          icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',                                                       active: false },
+  { label: 'Settings',      icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z', active: false },
+];
+
+const TABS = ['Overview', 'Tasks', 'Timeline', 'Files', 'Team', 'Settings'];
+
+/* ── Kanban Card ── */
+function KanbanCard({ task }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        background: hov ? 'rgba(255,255,255,0.04)' : 'var(--bg)',
+        border: '1px solid var(--border)',
+        borderRadius: 8, padding: '10px 12px',
+        cursor: 'pointer', transition: 'all 0.15s',
+        transform: hov ? 'translateY(-1px)' : 'none',
+      }}
+    >
+      <div style={{ marginBottom: 7 }}>
+        <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text)', lineHeight: 1.4, marginBottom: 5 }}>{task.title}</div>
+        <Badge label={task.priority} variant={task.priority} />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Avatar name={task.assignee} size={18} />
+          <span style={{ fontSize: 10, color: 'var(--text3)' }}>{task.assignee.split(' ')[0]}</span>
+        </div>
+        <span style={{ fontSize: 10, color: 'var(--text3)' }}>{task.due}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Kanban Column ── */
+function KanbanCol({ title, count, tasks, accent }) {
+  return (
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+        <div style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }}></div>
+        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>{title}</span>
+        <span style={{ fontSize: 11, color: 'var(--text3)', background: 'var(--bg3)', borderRadius: 10, padding: '1px 6px' }}>{count}</span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {tasks.map(t => <KanbanCard key={t.id} task={t} />)}
+      </div>
+    </div>
+  );
+}
+
+/* ── App ── */
+function App() {
+  const [activeNav, setActiveNav] = useState('Dashboard');
+  const [activeTab, setActiveTab] = useState('Overview');
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  return (
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg)' }}>
+
+      {/* SIDEBAR */}
+      <aside style={{ width: 224, flexShrink: 0, background: 'var(--bg2)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {/* Logo */}
+        <div style={{ padding: '20px 20px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 0 16px rgba(95,30,226,0.4)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+          </div>
+          <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: '-0.02em', color: 'var(--text)' }}>ProjectHub</span>
+        </div>
+
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '4px 10px', overflowY: 'auto' }}>
+          {NAV.map(item => {
+            const active = activeNav === item.label;
+            return (
+              <button key={item.label} onClick={() => setActiveNav(item.label)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  width: '100%', padding: '8px 10px', borderRadius: 7, border: 'none',
+                  cursor: 'pointer', marginBottom: 2,
+                  background: active ? 'var(--primary-light)' : 'transparent',
+                  color: active ? 'var(--text)' : 'var(--text3)',
+                  fontFamily: 'Inter', fontSize: 13, fontWeight: active ? 600 : 400,
+                  transition: 'all 0.12s', textAlign: 'left', position: 'relative',
+                }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--text2)'; } }}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text3)'; } }}
+              >
+                {active && <div style={{ position: 'absolute', left: 0, top: '20%', bottom: '20%', width: 3, borderRadius: '0 3px 3px 0', background: 'var(--primary)', marginLeft: -10 }}></div>}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round">
+                  <path d={item.icon} />
+                </svg>
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Upgrade card */}
+        <div style={{ margin: '8px 12px 16px', padding: '14px', borderRadius: 10, background: 'linear-gradient(135deg, rgba(112,69,186,0.25) 0%, rgba(95,30,226,0.15) 100%)', border: '1px solid rgba(112,69,186,0.3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
+            <span style={{ fontSize: 14 }}>👑</span>
+            <span style={{ fontWeight: 700, fontSize: 12, color: 'var(--text)' }}>Upgrade to Pro</span>
+          </div>
+          <p style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 10, lineHeight: 1.5 }}>Unlock advanced features and analytics.</p>
+          <button style={{ width: '100%', padding: '7px', borderRadius: 6, background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', border: 'none', color: '#fff', fontSize: 11, fontWeight: 600, fontFamily: 'Inter', cursor: 'pointer' }}>Upgrade Now</button>
+        </div>
+
+        {/* Collapse */}
+        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text3)', cursor: 'pointer', fontSize: 12 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
+          Collapse
+        </div>
+      </aside>
+
+      {/* MAIN */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+
+        {/* TOP BAR */}
+        <header style={{ height: 56, flexShrink: 0, background: 'var(--bg2)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', padding: '0 24px', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
+            <span style={{ color: 'var(--text3)', fontSize: 12 }}>Projects</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text3)' }}><path d="M9 18l6-6-6-6"/></svg>
+            <span style={{ color: 'var(--text2)', fontSize: 12, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Acme Website Redesign</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 8, padding: '0 12px', height: 34, width: 220 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text3)', flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style={{ fontSize: 12, color: 'var(--text3)' }}>Search...</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ position: 'relative', cursor: 'pointer' }}>
+              <div className="hdr-icon-btn" style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--bg3)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text2)' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <div style={{ position: 'absolute', top: 4, right: 4, width: 7, height: 7, borderRadius: '50%', background: '#ef4444', border: '1.5px solid var(--bg2)' }}></div>
+            </div>
+            <button className="hdr-btn" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 12px', height: 34, borderRadius: 8, background: 'var(--bg3)', border: '1px solid var(--border)', color: 'var(--text2)', fontSize: 12, fontWeight: 500, fontFamily: 'Inter', cursor: 'pointer' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share
+            </button>
+            <button className="hdr-primary-btn" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 14px', height: 34, borderRadius: 8, background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 600, fontFamily: 'Inter', cursor: 'pointer', boxShadow: '0 2px 12px rgba(95,30,226,0.35)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Task
+            </button>
+            <div style={{ position: 'relative' }}>
+              <div className="profile-btn" onClick={() => setProfileOpen(o => !o)}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 8px', height: 34, borderRadius: 8, background: profileOpen ? '#2a2636' : 'var(--bg3)', border: profileOpen ? '1px solid rgba(112,69,186,0.4)' : '1px solid var(--border)', cursor: 'pointer' }}>
+                <Avatar name="John Smith" size={22} color="#7045ba" />
+                <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text)' }}>John Smith</span>
+                  <span style={{ fontSize: 10, color: 'var(--text3)' }}>Admin</span>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  style={{ color: 'var(--text3)', transition: 'transform 0.2s', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              {profileOpen && (
+                <div className="profile-dropdown">
+                  {/* User info */}
+                  <div style={{ padding: '10px 10px 8px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Avatar name="John Smith" size={36} color="#7045ba" />
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>John Smith</div>
+                      <div style={{ fontSize: 11, color: 'var(--text3)' }}>john@acme.com</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  {[
+                    { icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', label: 'My Profile' },
+                    { icon: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33', label: 'Account Settings' },
+                    { icon: 'M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6 6 0 1 0-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9', label: 'Notifications' },
+                    { icon: 'M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z', label: 'Workspace Plan', badge: 'Free' },
+                  ].map((item, i) => (
+                    <button key={i} className="dropdown-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon}/></svg>
+                      <span style={{ flex: 1 }}>{item.label}</span>
+                      {item.badge && <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 6px', borderRadius: 4, background: 'rgba(112,69,186,0.2)', color: '#a07de0' }}>{item.badge}</span>}
+                    </button>
+                  ))}
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item danger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* PAGE HEADER */}
+        <div style={{ padding: '20px 24px 0', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <h1 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text)' }}>Acme Website Redesign</h1>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p style={{ fontSize: 12, color: 'var(--text3)' }}>Redesigning the corporate website with a focus on UX and performance.</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', color: 'var(--text2)', fontSize: 12 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              May 12 – May 18, 2024
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 0 }}>
+            {TABS.map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)}
+                style={{
+                  padding: '8px 16px', background: 'transparent', border: 'none',
+                  borderBottom: activeTab === tab ? '2px solid var(--primary)' : '2px solid transparent',
+                  color: activeTab === tab ? 'var(--text)' : 'var(--text3)',
+                  fontFamily: 'Inter', fontSize: 13, fontWeight: activeTab === tab ? 600 : 400,
+                  cursor: 'pointer', transition: 'all 0.12s', marginBottom: -1,
+                }}
+              >{tab}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* CONTENT */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+          {/* METRIC CARDS */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12 }}>
+            {[
+              { label: 'Tasks',       value: '42',  sub: 'Total tasks',        ring: 100, color: '#7045ba', spark: [20,25,22,30,28,35,42],  isSpark: false },
+              { label: 'In Progress', value: '16',  sub: '38% of total',       ring: 38,  color: '#5f1ee2', spark: [8,10,12,14,13,15,16],   isSpark: false },
+              { label: 'Completed',   value: '24',  sub: '57% of total',       ring: 57,  color: '#22c98a', spark: [5,8,12,16,18,22,24],    isSpark: false },
+              { label: 'Overdue',     value: '2',   sub: '5% of total',        ring: 5,   color: '#ef4444', spark: [0,1,1,2,1,2,2],         isSpark: false },
+              { label: 'Progress',    value: '57%', sub: 'Project completion',  ring: 57,  color: '#a07de0', spark: [20,28,34,40,45,52,57],  isSpark: true  },
+            ].map((m, i) => (
+              <div key={i} style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 4, fontWeight: 500 }}>{m.label}</div>
+                    <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--text)' }}>{m.value}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text3)' }}>{m.sub}</div>
+                  </div>
+                  {m.isSpark
+                    ? <Spark data={m.spark} color={m.color} />
+                    : <RingChart pct={m.ring} color={m.color} size={46} stroke={4.5} />
+                  }
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* MIDDLE ROW */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16, alignItems: 'start' }}>
+
+            {/* Kanban */}
+            <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>Tasks Kanban</span>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text3)', fontSize: 11, fontFamily: 'Inter', cursor: 'pointer' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+                    Filter
+                  </button>
+                  <button style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text3)', fontSize: 11, fontFamily: 'Inter', cursor: 'pointer' }}>
+                    Group by: Status
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+                <KanbanCol title="To Do"       count={12} tasks={KANBAN.todo}       accent="#a07de0" />
+                <KanbanCol title="In Progress" count={16} tasks={KANBAN.inprogress} accent="#5f1ee2" />
+                <KanbanCol title="Review"      count={6}  tasks={KANBAN.review}     accent="#f59e0b" />
+                <KanbanCol title="Done"        count={8}  tasks={KANBAN.done}       accent="#22c98a" />
+              </div>
+            </div>
+
+            {/* Right column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              {/* Timeline */}
+              <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>Timeline</span>
+                  <span style={{ fontSize: 11, color: 'var(--primary)', cursor: 'pointer', fontWeight: 500 }}>View full →</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, paddingLeft: 110 }}>
+                  {['12','14','16','18','20','22','24'].map(d => (
+                    <span key={d} style={{ fontSize: 10, color: 'var(--text3)', width: 20, textAlign: 'center' }}>{d}</span>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {TIMELINE.map((row, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 10, color: 'var(--text3)', width: 102, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{row.name}</span>
+                      <div style={{ flex: 1, height: 16, position: 'relative', borderRadius: 4, background: 'var(--bg3)' }}>
+                        <div style={{ position: 'absolute', top: 0, height: '100%', borderRadius: 4, left: `${row.start}%`, width: `${row.width}%`, background: row.color, opacity: 0.85 }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>Recent Activity</span>
+                  <span style={{ fontSize: 11, color: 'var(--primary)', cursor: 'pointer', fontWeight: 500 }}>View all →</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {ACTIVITY.map((a, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                      <Avatar name={a.user} size={28} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, lineHeight: 1.5 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>{a.user}</span>
+                          <span style={{ fontSize: 12, color: 'var(--text3)' }}>{a.action}</span>
+                          <Badge label={a.target} variant={a.tag} />
+                        </div>
+                        <span style={{ fontSize: 10, color: 'var(--text3)' }}>{a.time}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* BOTTOM ROW */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+
+            {/* Project Progress */}
+            <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>Project Progress</span>
+                <span style={{ fontSize: 11, color: 'var(--primary)', cursor: 'pointer', fontWeight: 500 }}>All projects →</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {PROJECTS.map((p, i) => (
+                  <div key={i}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>{p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 11, color: 'var(--text3)' }}>{p.tasks} tasks</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: p.color }}>{p.progress}%</span>
+                      </div>
+                    </div>
+                    <div style={{ height: 6, background: 'var(--bg3)', borderRadius: 6, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${p.progress}%`, background: p.color, borderRadius: 6 }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Task Breakdown */}
+            <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px' }}>
+              <div style={{ marginBottom: 14 }}>
+                <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)' }}>Task Breakdown</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    {[
+                      { pct: 28, color: '#a07de0', offset: 0  },
+                      { pct: 38, color: '#5f1ee2', offset: 28 },
+                      { pct: 14, color: '#f59e0b', offset: 66 },
+                      { pct: 20, color: '#22c98a', offset: 80 },
+                    ].map((seg, i) => {
+                      const r = 38, circ = 2 * Math.PI * r;
+                      const dash = (seg.pct / 100) * circ;
+                      const rotate = (seg.offset / 100) * 360 - 90;
+                      return (
+                        <circle key={i} cx="50" cy="50" r={r} fill="none" stroke={seg.color}
+                          strokeWidth="12" strokeDasharray={`${dash} ${circ}`}
+                          style={{ transform: `rotate(${rotate}deg)`, transformOrigin: '50px 50px' }} />
+                      );
+                    })}
+                    <text x="50" y="46" textAnchor="middle" fill="#f1eff5" fontSize="18" fontWeight="700" fontFamily="Inter">42</text>
+                    <text x="50" y="58" textAnchor="middle" fill="#6b6382" fontSize="8" fontFamily="Inter">Total</text>
+                  </svg>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
+                  {[
+                    { label: 'To Do',       count: 12, pct: '28%', color: '#a07de0' },
+                    { label: 'In Progress', count: 16, pct: '38%', color: '#5f1ee2' },
+                    { label: 'Review',      count: 6,  pct: '14%', color: '#f59e0b' },
+                    { label: 'Done',        count: 8,  pct: '20%', color: '#22c98a' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.color, flexShrink: 0 }}></div>
+                      <span style={{ fontSize: 12, color: 'var(--text2)', flex: 1 }}>{item.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>{item.count}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text3)', width: 32, textAlign: 'right' }}>{item.pct}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

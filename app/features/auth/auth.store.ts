@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(null)
   const isInitialized = ref(false);
   const isAuthenticated = computed(() => token.value !== null)
+  const isFetching = ref(false);
 
   const loadAuthToken = () => {
     if (!import.meta.client) return;
@@ -24,8 +25,16 @@ export const useAuthStore = defineStore('auth', () => {
 
   }
 
-  const registration = (name:string, email: string, password: string) => {
+  const register = async (name:string, email: string, password: string) => {
+    isFetching.value = true;
+    
+    try {
 
+    } catch(e) {
+
+    } finally {
+      isFetching.value = false;
+    }
   }
 
   const initAuth = async () => {
