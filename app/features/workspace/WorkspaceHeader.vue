@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 
 import {
@@ -14,8 +13,7 @@ import {
   faShareNodes,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
-
-const profileOpen = ref(false)
+import { useDropdown } from '~/composables/useDropdown'
 
 type DropdownItem = {
   icon: IconDefinition
@@ -24,25 +22,13 @@ type DropdownItem = {
 }
 
 const dropdownItems: DropdownItem[] = [
-  { icon: faUser, label: 'My Profile' },
-  { icon: faGear, label: 'Account Settings' },
-  { icon: faBell, label: 'Notifications' },
+  { icon: faUser,      label: 'My Profile' },
+  { icon: faGear,      label: 'Account Settings' },
+  { icon: faBell,      label: 'Notifications' },
   { icon: faFileLines, label: 'Workspace Plan', badge: 'Free' },
 ]
 
-const profileButtonRef = ref<HTMLButtonElement | null>(null)
-const dropdownMenuRef = ref<HTMLDivElement| null>(null)
-
-useEventListener('click', (event) => {
-  if (
-    profileButtonRef.value &&
-    dropdownMenuRef.value &&
-    !profileButtonRef.value.contains(event.target as Node) &&
-    !dropdownMenuRef.value.contains(event.target as Node)
-  ) {
-    profileOpen.value = false
-  }
-})
+const { isOpen: profileOpen, buttonRef: profileButtonRef, menuRef: dropdownMenuRef } = useDropdown()
 </script>
 
 <template>

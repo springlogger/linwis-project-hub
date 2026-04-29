@@ -6,21 +6,23 @@ type Props = {
   metrics: Metric[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const ringParamsList = computed(() => props.metrics.map(m => getRingParams(m.ring)))
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
     <div
-      v-for="metric in metrics"
+      v-for="(metric, i) in metrics"
       :key="metric.label"
       class="app-panel p-4"
     >
       <div class="flex items-start justify-between gap-3">
         <div>
-          <div class="mb-1 text-[11px] font-medium text-[var(--color-third)]">{{ metric.label }}</div>
-          <div class="mb-1 text-[26px] font-bold leading-none tracking-tight text-[var(--color-text)]">{{ metric.value }}</div>
-          <div class="text-[11px] text-[var(--color-third)]">{{ metric.sub }}</div>
+          <div class="mb-1 text-[0.6875rem] font-medium text-[var(--color-third)]">{{ metric.label }}</div>
+          <div class="mb-1 text-[1.625rem] font-bold leading-none tracking-tight text-[var(--color-text)]">{{ metric.value }}</div>
+          <div class="text-[0.6875rem] text-[var(--color-third)]">{{ metric.sub }}</div>
         </div>
 
         <svg v-if="metric.isSpark" width="72" height="32" style="overflow: visible">
@@ -36,26 +38,26 @@ defineProps<Props>()
 
         <svg
           v-else
-          :width="getRingParams(metric.ring).size"
-          :height="getRingParams(metric.ring).size"
+          :width="ringParamsList[i]!.size"
+          :height="ringParamsList[i]!.size"
           style="transform: rotate(-90deg); flex-shrink: 0"
         >
           <circle
-            :cx="getRingParams(metric.ring).center"
-            :cy="getRingParams(metric.ring).center"
-            :r="getRingParams(metric.ring).radius"
+            :cx="ringParamsList[i]!.center"
+            :cy="ringParamsList[i]!.center"
+            :r="ringParamsList[i]!.radius"
             fill="none"
             stroke="rgba(255,255,255,0.07)"
-            :stroke-width="getRingParams(metric.ring).stroke"
+            :stroke-width="ringParamsList[i]!.stroke"
           />
           <circle
-            :cx="getRingParams(metric.ring).center"
-            :cy="getRingParams(metric.ring).center"
-            :r="getRingParams(metric.ring).radius"
+            :cx="ringParamsList[i]!.center"
+            :cy="ringParamsList[i]!.center"
+            :r="ringParamsList[i]!.radius"
             fill="none"
             :stroke="metric.color"
-            :stroke-width="getRingParams(metric.ring).stroke"
-            :stroke-dasharray="`${getRingParams(metric.ring).dashLength} ${getRingParams(metric.ring).circumference}`"
+            :stroke-width="ringParamsList[i]!.stroke"
+            :stroke-dasharray="`${ringParamsList[i]!.dashLength} ${ringParamsList[i]!.circumference}`"
             stroke-linecap="round"
           />
         </svg>

@@ -45,8 +45,8 @@ function isLastVisibleItem(groupIndex: number, itemIndex: number): boolean {
 <template>
   <div class="flex flex-col gap-4 p-6 pb-8">
     <div class="flex items-center gap-2.5">
-      <label class="flex h-9 w-[260px] shrink-0 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-third)] px-3">
-        <font-awesome :icon="faMagnifyingGlass" class="h-[13px] w-[13px] shrink-0 text-[var(--color-third)]" />
+      <label class="flex h-9 w-[16.25rem] shrink-0 items-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-third)] px-3">
+        <font-awesome :icon="faMagnifyingGlass" class="h-[0.8125rem] w-[0.8125rem] shrink-0 text-[var(--color-third)]" />
         <input
           v-model="searchQuery"
           type="text"
@@ -60,7 +60,7 @@ function isLastVisibleItem(groupIndex: number, itemIndex: number): boolean {
           v-for="filter in filters"
           :key="filter"
           type="button"
-          class="cursor-pointer rounded-[7px] px-3.5 py-1.5 text-xs transition-all duration-150"
+          class="cursor-pointer rounded-[0.4375rem] px-3.5 py-1.5 text-xs transition-all duration-150"
           :class="activeFilter === filter
             ? 'border-0 bg-[linear-gradient(135deg,var(--color-primary)_0%,var(--color-accent)_100%)] font-semibold text-white shadow-[0_2px_8px_rgba(95,30,226,0.3)]'
             : 'border border-[var(--color-border)] bg-[var(--color-bg-third)] font-normal text-[var(--color-third)]'"
@@ -74,7 +74,7 @@ function isLastVisibleItem(groupIndex: number, itemIndex: number): boolean {
     <div class="app-panel overflow-hidden">
       <template v-for="(group, groupIndex) in visibleGroups" :key="group.group">
         <div class="px-5 pb-2.5 pt-3.5">
-          <span class="text-[13px] font-bold text-[var(--color-text)]">{{ group.group }}</span>
+          <span class="text-[0.8125rem] font-bold text-[var(--color-text)]">{{ group.group }}</span>
         </div>
 
         <div
@@ -86,8 +86,8 @@ function isLastVisibleItem(groupIndex: number, itemIndex: number): boolean {
             'border-b border-white/[0.04]': itemIndex < group.items.length - 1,
           }"
         >
-          <div class="w-[90px] shrink-0 py-3.5">
-            <span class="text-[11px] tabular-nums text-[var(--color-third)]">{{ item.time }}</span>
+          <div class="w-[5.625rem] shrink-0 py-3.5">
+            <span class="text-[0.6875rem] tabular-nums text-[var(--color-third)]">{{ item.time }}</span>
           </div>
 
           <div class="flex w-6 shrink-0 flex-col items-center self-stretch pt-3.5">
@@ -104,18 +104,18 @@ function isLastVisibleItem(groupIndex: number, itemIndex: number): boolean {
 
           <div class="min-w-0 flex-1 py-3.5">
             <div class="flex min-w-0 flex-wrap items-baseline gap-1 leading-[1.5]">
-              <span class="whitespace-nowrap text-[13px] font-semibold text-[var(--color-text)]">{{ item.user }}</span>
-              <span class="whitespace-nowrap text-[13px] text-[var(--color-third)]">{{ item.action }}</span>
-              <span class="text-[13px] font-medium text-[var(--color-text)]">{{ item.target }}</span>
+              <span class="whitespace-nowrap text-[0.8125rem] font-semibold text-[var(--color-text)]">{{ item.user }}</span>
+              <span class="whitespace-nowrap text-[0.8125rem] text-[var(--color-third)]">{{ item.action }}</span>
+              <span class="text-[0.8125rem] font-medium text-[var(--color-text)]">{{ item.target }}</span>
             </div>
-            <div class="mt-0.5 text-[11px]" :class="item.subLink ? 'text-[var(--color-primary)]' : 'text-[var(--color-third)]'">
+            <div class="mt-0.5 text-[0.6875rem]" :class="item.subLink ? 'text-[var(--color-primary)]' : 'text-[var(--color-third)]'">
               {{ item.sub }}
             </div>
           </div>
 
           <div class="flex shrink-0 items-center gap-2">
             <div
-              class="flex size-7 shrink-0 items-center justify-center rounded-full text-[10.5px] font-semibold text-white"
+              class="flex size-7 shrink-0 items-center justify-center rounded-full text-[0.65625rem] font-semibold text-white"
               :style="{ background: getAvatarBackground(item.user) }"
             >
               {{ getAvatarInitials(item.user) }}

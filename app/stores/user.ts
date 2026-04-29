@@ -17,5 +17,5 @@ export const useUserStore = defineStore('user', () => {
 
   }
 
-  return name;
+  return { name, auth, registration }
 })

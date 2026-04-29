@@ -19,9 +19,9 @@ const isSidebarOpen = ref(false);
         </header>
 
 
-        <main class="min-w-0 flex-1 overflow-auto">
+        <div class="min-w-0 flex-1 min-h-0 overflow-hidden">
           <slot />
-        </main>
+        </div>
 
       </div>
 

@@ -54,10 +54,7 @@ export type TaskBreakdownItem = {
   color: string
 }
 
-export type BadgeStyle = {
-  bg: string
-  color: string
-}
+export type { BadgeStyle } from '~/utils/badges'
 
 export type DashboardIconKey =
   | 'activity'
@@ -150,7 +147,6 @@ export type Suggestion = {
   color: string
 }
 
-export const DEFAULT_BADGE_STYLE: BadgeStyle = { bg: 'rgba(112,69,186,0.2)', color: '#a07de0' }
 export const DASHBOARD_TABS = ['Overview', 'Timeline', 'Table', 'Insights'] as const
 export const TIMELINE_FILTERS = ['All', 'Projects', 'Tasks', 'Team', 'Comments'] as const
 export const TABLE_FILTERS = ['All', 'Projects', 'Tasks', 'High Priority', 'Overdue'] as const
@@ -237,34 +233,8 @@ export const TASK_BREAKDOWN_ITEMS: TaskBreakdownItem[] = [
   { label: 'Done', count: 8, pct: '20%', pctVal: 20, color: '#22c98a' },
 ]
 
-export const BADGE_STYLES: Record<string, BadgeStyle> = {
-  high: { bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  medium: { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  low: { bg: 'rgba(34,201,138,0.15)', color: '#22c98a' },
-  completed: { bg: 'rgba(34,201,138,0.15)', color: '#22c98a' },
-  'in progress': { bg: 'rgba(95,30,226,0.2)', color: '#9b6cf7' },
-  review: { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  default: DEFAULT_BADGE_STYLE,
-}
-
-export const STATUS_STYLES: Record<string, BadgeStyle> = {
-  Active: { bg: 'rgba(34,201,138,0.15)', color: '#22c98a' },
-  Review: { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  Planning: { bg: 'rgba(112,69,186,0.2)', color: '#a07de0' },
-  Overdue: { bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  'At Risk': { bg: 'rgba(239,68,68,0.12)', color: '#f87171' },
-  'In Progress': { bg: 'rgba(95,30,226,0.2)', color: '#9b6cf7' },
-  Healthy: { bg: 'rgba(34,201,138,0.15)', color: '#22c98a' },
-  'Needs Attention': { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-}
-
-export const PRIORITY_STYLES: Record<string, BadgeStyle> = {
-  High: { bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  Medium: { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  Low: { bg: 'rgba(34,201,138,0.15)', color: '#22c98a' },
-}
-
-export const AVATAR_PALETTE = ['#7045ba', '#5f1ee2', '#441f8e', '#3b5fe2', '#1e7a8e'] as const
+export { BADGE_STYLES, STATUS_STYLES, PRIORITY_STYLES, DEFAULT_BADGE_STYLE } from '~/utils/badges'
+export { AVATAR_PALETTE } from '~/utils/avatar'
 
 export const TIMELINE_ACTIVITY_GROUPS: TimelineActivityGroup[] = [
   {

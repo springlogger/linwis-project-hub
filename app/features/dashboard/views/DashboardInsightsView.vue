@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { BadgeStyle, InsightMetric, InsightProject, Risk, Suggestion, TeamMember } from '../dashboard.data'
+import type { InsightMetric, InsightProject, Risk, Suggestion, TeamMember } from '../dashboard.data'
+import type { BadgeStyle } from '~/utils/badges'
 import { getAvatarBackground, getAvatarInitials } from '../dashboard.helpers'
 import { DASHBOARD_ICON_MAP } from '../dashboard.icons'
 
@@ -34,9 +35,9 @@ function getRiskColor(level: Risk['level']): string {
           <font-awesome :icon="DASHBOARD_ICON_MAP[metric.icon]" class="h-4 w-4" />
         </div>
         <div class="min-w-0 flex-1">
-          <div class="mb-0.5 text-[11px] font-medium text-[var(--color-third)]">{{ metric.label }}</div>
+          <div class="mb-0.5 text-[0.6875rem] font-medium text-[var(--color-third)]">{{ metric.label }}</div>
           <div class="text-xl font-bold tracking-[-0.03em] text-[var(--color-text)]">{{ metric.value }}</div>
-          <div class="mt-0.5 text-[10px] text-[var(--color-third)]">{{ metric.sub }}</div>
+          <div class="mt-0.5 text-[0.625rem] text-[var(--color-third)]">{{ metric.sub }}</div>
         </div>
       </div>
     </div>
@@ -56,17 +57,17 @@ function getRiskColor(level: Risk['level']): string {
                   <div class="mb-0.5 flex items-center gap-2">
                     <span class="overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium text-[var(--color-text)]">{{ project.name }}</span>
                     <span
-                      class="inline-flex shrink-0 items-center whitespace-nowrap rounded px-2 py-[3px] text-[11px] font-semibold"
+                      class="inline-flex shrink-0 items-center whitespace-nowrap rounded px-2 py-[0.1875rem] text-[0.6875rem] font-semibold"
                       :style="{ background: statusStyles[project.status]?.bg, color: statusStyles[project.status]?.color }"
                     >
                       {{ project.status }}
                     </span>
                   </div>
-                  <span class="text-[10px] text-[var(--color-third)]">{{ project.note }}</span>
+                  <span class="text-[0.625rem] text-[var(--color-third)]">{{ project.note }}</span>
                 </div>
-                <span class="shrink-0 text-[13px] font-bold" :style="{ color: project.color }">{{ project.progress }}%</span>
+                <span class="shrink-0 text-[0.8125rem] font-bold" :style="{ color: project.color }">{{ project.progress }}%</span>
               </div>
-              <div class="h-[5px] overflow-hidden rounded-full bg-[var(--color-bg-secondary)]">
+              <div class="h-[0.3125rem] overflow-hidden rounded-full bg-[var(--color-bg-secondary)]">
                 <div class="h-full rounded-full" :style="{ width: `${project.progress}%`, background: project.color }" />
               </div>
             </div>
@@ -76,7 +77,7 @@ function getRiskColor(level: Risk['level']): string {
         <div class="app-panel p-4">
           <div class="mb-3.5 flex items-center justify-between">
             <span class="app-panel-title">Risks & Alerts</span>
-            <span class="inline-flex items-center rounded bg-[rgba(239,68,68,0.15)] px-2 py-[2px] text-[11px] font-semibold text-[var(--color-red)]">
+            <span class="inline-flex items-center rounded bg-[rgba(239,68,68,0.15)] px-2 py-0.5 text-[0.6875rem] font-semibold text-[var(--color-red)]">
               {{ risks.length }} active
             </span>
           </div>
@@ -92,11 +93,11 @@ function getRiskColor(level: Risk['level']): string {
                 class="flex size-7 shrink-0 items-center justify-center rounded-lg"
                 :style="{ background: `${getRiskColor(risk.level)}18`, color: getRiskColor(risk.level) }"
               >
-                <font-awesome :icon="DASHBOARD_ICON_MAP[risk.icon]" class="h-[13px] w-[13px]" />
+                <font-awesome :icon="DASHBOARD_ICON_MAP[risk.icon]" class="h-[0.8125rem] w-[0.8125rem]" />
               </div>
               <div class="min-w-0 flex-1">
                 <div class="mb-0.5 text-xs font-semibold text-[var(--color-text)]">{{ risk.title }}</div>
-                <div class="text-[11px] text-[var(--color-third)]">{{ risk.desc }}</div>
+                <div class="text-[0.6875rem] text-[var(--color-third)]">{{ risk.desc }}</div>
               </div>
             </div>
           </div>
@@ -107,30 +108,30 @@ function getRiskColor(level: Risk['level']): string {
         <div class="app-panel p-4">
           <div class="mb-4 flex items-center justify-between">
             <span class="app-panel-title">Team Workload</span>
-            <span class="text-[11px] text-[var(--color-third)]">This sprint</span>
+            <span class="text-[0.6875rem] text-[var(--color-third)]">This sprint</span>
           </div>
 
           <div class="flex flex-col gap-3.5">
             <div v-for="member in teamLoad" :key="member.name">
               <div class="mb-1.5 flex items-center gap-2.5">
                 <div
-                  class="flex size-7 shrink-0 items-center justify-center rounded-full text-[10.5px] font-semibold text-white"
+                  class="flex size-7 shrink-0 items-center justify-center rounded-full text-[0.65625rem] font-semibold text-white"
                   :style="{ background: getAvatarBackground(member.name) }"
                 >
                   {{ getAvatarInitials(member.name) }}
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="mb-0.5 text-xs font-semibold text-[var(--color-text)]">{{ member.name }}</div>
-                  <div class="text-[10px] text-[var(--color-third)]">{{ member.role }}</div>
+                  <div class="text-[0.625rem] text-[var(--color-third)]">{{ member.role }}</div>
                 </div>
                 <div class="flex items-center gap-1">
-                  <span v-if="member.load >= 85" class="rounded bg-[var(--color-red-soft)] px-1.5 py-px text-[10px] font-semibold text-[var(--color-red)]">
+                  <span v-if="member.load >= 85" class="rounded bg-[var(--color-red-soft)] px-1.5 py-px text-[0.625rem] font-semibold text-[var(--color-red)]">
                     Overloaded
                   </span>
-                  <span class="text-[13px] font-bold" :style="{ color: member.color }">{{ member.load }}%</span>
+                  <span class="text-[0.8125rem] font-bold" :style="{ color: member.color }">{{ member.load }}%</span>
                 </div>
               </div>
-              <div class="h-[5px] overflow-hidden rounded-full bg-[var(--color-bg-secondary)]">
+              <div class="h-[0.3125rem] overflow-hidden rounded-full bg-[var(--color-bg-secondary)]">
                 <div class="h-full rounded-full" :style="{ width: `${member.load}%`, background: member.color }" />
               </div>
             </div>
@@ -140,7 +141,7 @@ function getRiskColor(level: Risk['level']): string {
         <div class="app-panel p-4">
           <div class="mb-3.5 flex items-center justify-between">
             <span class="app-panel-title">Suggested Actions</span>
-            <span class="rounded bg-[var(--color-bg-secondary)] px-2 py-[3px] text-[10px] font-medium text-[var(--color-third)]">
+            <span class="rounded bg-[var(--color-bg-secondary)] px-2 py-[0.1875rem] text-[0.625rem] font-medium text-[var(--color-third)]">
               {{ suggestions.length }} suggestions
             </span>
           </div>
@@ -152,14 +153,14 @@ function getRiskColor(level: Risk['level']): string {
               class="flex items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2.5 transition-colors duration-150 hover:border-[var(--color-border-active)]"
             >
               <div
-                class="flex size-[30px] shrink-0 items-center justify-center rounded-lg border"
+                class="flex size-[1.875rem] shrink-0 items-center justify-center rounded-lg border"
                 :style="{ background: `${suggestion.color}18`, borderColor: `${suggestion.color}25`, color: suggestion.color }"
               >
-                <font-awesome :icon="DASHBOARD_ICON_MAP[suggestion.icon]" class="h-[13px] w-[13px]" />
+                <font-awesome :icon="DASHBOARD_ICON_MAP[suggestion.icon]" class="h-[0.8125rem] w-[0.8125rem]" />
               </div>
               <div class="min-w-0 flex-1">
                 <div class="mb-0.5 text-xs font-semibold text-[var(--color-text)]">{{ suggestion.title }}</div>
-                <div class="text-[11px] text-[var(--color-third)]">{{ suggestion.desc }}</div>
+                <div class="text-[0.6875rem] text-[var(--color-third)]">{{ suggestion.desc }}</div>
               </div>
               <button type="button" class="app-toolbar-button bg-[var(--color-bg-third)] shrink-0 whitespace-nowrap">
                 {{ suggestion.action }}

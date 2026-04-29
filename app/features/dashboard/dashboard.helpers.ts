@@ -1,10 +1,4 @@
-import {
-  AVATAR_PALETTE,
-  BADGE_STYLES,
-  DEFAULT_BADGE_STYLE,
-  type BadgeStyle,
-  type TaskBreakdownItem,
-} from './dashboard.data'
+import type { TaskBreakdownItem } from './dashboard.data'
 
 export type RingParams = {
   radius: number
@@ -47,32 +41,9 @@ export function getSparklinePoints(data: number[]): string {
     .map((value, index) => {
       const xPosition = (index / Math.max(data.length - 1, 1)) * width
       const yPosition = height - ((value - minValue) / range) * height
-
       return `${xPosition},${yPosition}`
     })
     .join(' ')
-}
-
-export function getAvatarInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((namePart) => namePart[0] ?? '')
-    .join('')
-    .slice(0, 2)
-}
-
-export function getAvatarBackground(name: string): string {
-  const firstCharacterCode = name.charCodeAt(0)
-
-  if (Number.isNaN(firstCharacterCode)) {
-    return AVATAR_PALETTE[0]
-  }
-
-  return AVATAR_PALETTE[firstCharacterCode % AVATAR_PALETTE.length] ?? AVATAR_PALETTE[0]
-}
-
-export function getBadgeStyle(tag: string): BadgeStyle {
-  return BADGE_STYLES[tag.toLowerCase()] ?? DEFAULT_BADGE_STYLE
 }
 
 export function getDonutSegments(items: TaskBreakdownItem[]): DonutSegment[] {
@@ -84,24 +55,16 @@ export function getDonutSegments(items: TaskBreakdownItem[]): DonutSegment[] {
     const dashLength = (item.pctVal / 100) * circumference
     const rotation = (currentOffset / 100) * 360 - 90
     currentOffset += item.pctVal
-
-    return {
-      ...item,
-      dashLength,
-      circumference,
-      rotation,
-    }
+    return { ...item, dashLength, circumference, rotation }
   })
 }
 
 export function getProgressColor(progress: number): string {
-  if (progress >= 80) {
-    return '#22c98a'
-  }
-
-  if (progress >= 50) {
-    return '#7045ba'
-  }
-
+  if (progress >= 80) return '#22c98a'
+  if (progress >= 50) return '#7045ba'
   return '#f59e0b'
 }
+
+// re-exports so dashboard components keep working without changes
+export { getAvatarBackground, getAvatarInitials } from '~/utils/avatar'
+export { getBadgeStyle } from '~/utils/badges'
