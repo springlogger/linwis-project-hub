@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TimelineItem } from './dashboard.data'
+import type { TimelineItem } from '../dashboard.data'
 
 type Props = {
   items: TimelineItem[]

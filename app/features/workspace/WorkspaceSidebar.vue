@@ -3,11 +3,12 @@ import ProjectLogo from '~/assets/image/ProjectLogo.png'
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 
 import {
-  faHouse,
+  faAnglesLeft,
   faFolder,
+  faGear,
+  faHouse,
   faSquareCheck,
   faUsers,
-  faGear,
 } from '@fortawesome/free-solid-svg-icons'
 
 const isSidebarOpen = ref(true)
@@ -95,18 +96,11 @@ const sidebarNavItems: SidebarNavItem[] = [
       :class="isSidebarOpen ? 'justify-start' : 'justify-center'"
       @click="isSidebarOpen = !isSidebarOpen"
     >
-      <svg
+      <font-awesome
+        :icon="faAnglesLeft"
         class="h-[22px] w-[22px] shrink-0 transition-transform duration-300"
         :class="{ '-scale-x-100': !isSidebarOpen }"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5" />
-      </svg>
+      />
 
       <p
         class="ml-1 overflow-hidden whitespace-nowrap transition-all duration-200"

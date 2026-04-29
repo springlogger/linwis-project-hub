@@ -93,3 +93,15 @@ export function getDonutSegments(items: TaskBreakdownItem[]): DonutSegment[] {
     }
   })
 }
+
+export function getProgressColor(progress: number): string {
+  if (progress >= 80) {
+    return '#22c98a'
+  }
+
+  if (progress >= 50) {
+    return '#7045ba'
+  }
+
+  return '#f59e0b'
+}

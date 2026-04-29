@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { TaskBreakdownItem } from './dashboard.data'
-import { getDonutSegments } from './dashboard.helpers'
+import type { TaskBreakdownItem } from '../dashboard.data'
+import { getDonutSegments } from '../dashboard.helpers'
 
 type Props = {
   items: TaskBreakdownItem[]

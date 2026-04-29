@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Metric } from './dashboard.data'
-import { getRingParams, getSparklinePoints } from './dashboard.helpers'
+import type { Metric } from '../dashboard.data'
+import { getRingParams, getSparklinePoints } from '../dashboard.helpers'
 
 type Props = {
   metrics: Metric[]

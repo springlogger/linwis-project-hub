@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ProjectProgress } from './dashboard.data'
+import type { ProjectProgress } from '../dashboard.data'
 
 type Props = {
   projects: ProjectProgress[]

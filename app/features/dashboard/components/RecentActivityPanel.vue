@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ActivityItem } from './dashboard.data'
-import { getAvatarBackground, getAvatarInitials, getBadgeStyle } from './dashboard.helpers'
+import type { ActivityItem } from '../dashboard.data'
+import { getAvatarBackground, getAvatarInitials, getBadgeStyle } from '../dashboard.helpers'
 
 type Props = {
   items: ActivityItem[]

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import type { KanbanColumn } from './dashboard.data'
-import { getAvatarBackground, getAvatarInitials, getBadgeStyle } from './dashboard.helpers'
+import { faChevronDown, faFilter } from '@fortawesome/free-solid-svg-icons'
+
+import type { KanbanColumn } from '../dashboard.data'
+import { getAvatarBackground, getAvatarInitials, getBadgeStyle } from '../dashboard.helpers'
 
 type Props = {
   columns: KanbanColumn[]
@@ -15,18 +17,12 @@ defineProps<Props>()
       <span class="app-panel-title">Tasks Kanban</span>
       <div class="flex gap-2">
         <button type="button" class="app-toolbar-button app-toolbar-button--compact">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="8" y1="12" x2="16" y2="12" />
-            <line x1="10" y1="18" x2="14" y2="18" />
-          </svg>
+          <font-awesome :icon="faFilter" class="h-3 w-3" />
           Filter
         </button>
         <button type="button" class="app-toolbar-button app-toolbar-button--compact">
           Group by: Status
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
+          <font-awesome :icon="faChevronDown" class="h-3 w-3" />
         </button>
       </div>
     </div>

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+
 import AppleLogo from '~/assets/image/Apple_logo_black.svg'
 import GoogleLogo from '~/assets/image/Google__G__logo.svg'
 
@@ -41,15 +43,7 @@ const emit = defineEmits<{
               />
 
               <span class="app-checkbox__box">
-                <svg class="app-checkbox__icon" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M4.5 10.5L8.2 14L15.5 6"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <font-awesome :icon="faCheck" class="app-checkbox__icon" />
               </span>
 
               <span class="app-checkbox__label">
@@ -66,15 +60,7 @@ const emit = defineEmits<{
               />
 
               <span class="app-checkbox__box">
-                <svg class="app-checkbox__icon" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M4.5 10.5L8.2 14L15.5 6"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <font-awesome :icon="faCheck" class="app-checkbox__icon" />
               </span>
 
               <span class="app-checkbox__label">
@@ -93,15 +79,7 @@ const emit = defineEmits<{
         />
 
         <span class="app-checkbox__box">
-          <svg class="app-checkbox__icon" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M4.5 10.5L8.2 14L15.5 6"
-              stroke="currentColor"
-              stroke-width="2.4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <font-awesome :icon="faCheck" class="app-checkbox__icon" />
         </span>
 
         <span class="app-checkbox__label">

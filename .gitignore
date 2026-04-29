@@ -17,6 +17,7 @@ logs
 .DS_Store
 .fleet
 .idea
+app/assets/AI
 
 # Local env files
 .env
