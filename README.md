@@ -4,6 +4,10 @@
 
 Built with Nuxt 4 and Vue 3, the project follows a feature-based architecture with typed data layers, route middleware, and a consistent dark-mode design system.
 
+## Deploy
+
+https://linwis-project-hub.vercel.app/
+
 ## Design
 
 https://www.figma.com/design/B64dEf5cYnlw4TQZYCjF12/Untitled?node-id=6-7109&p=f&t=DxGghmTR1C95as6s-0
