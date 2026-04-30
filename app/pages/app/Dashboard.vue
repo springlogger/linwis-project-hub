@@ -27,7 +27,7 @@ import {
 import { PRIORITY_STYLES, STATUS_STYLES } from '~/utils/badges'
 
 definePageMeta({
-  middleware: ['guest'],
+  middleware: ['auth'],
   layout: 'workspace-layout',
 })
 

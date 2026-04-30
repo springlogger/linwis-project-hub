@@ -8,7 +8,7 @@ import { COLUMNS } from '~/features/tasks/tasks.data'
 import { useCardSize } from '~/composables/useCardSize'
 
 definePageMeta({
-  middleware: ['guest'],
+  middleware: ['auth'],
   layout: 'workspace-layout',
 })
 

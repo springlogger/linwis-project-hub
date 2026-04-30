@@ -3,6 +3,10 @@ import AuthLayout from '~/features/auth/components/AuthLayout.vue';
 import LoginForm from '~/features/auth/components/LoginForm.vue';
 import RegisterForm from '~/features/auth/components/RegisterForm.vue';
 
+definePageMeta({
+  middleware: ['guest']
+})
+
 const route = useRoute()
 const router = useRouter()
 
@@ -10,7 +14,7 @@ const mode = computed(() => {
   return route.query.mode === 'login' ? 'login' : 'register'
 })
 
-function setMode(value: 'login' | 'register') {
+const setMode = (value: 'login' | 'register') => {
   router.push({
     path: '/auth',
     query: {

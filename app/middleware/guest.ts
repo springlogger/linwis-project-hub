@@ -1,8 +1,6 @@
 import { useAuthStore } from "~/features/auth/auth.store"
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  if (import.meta.server) return
-
   const authStore = useAuthStore()
 
   if (!authStore.isInitialized) {
@@ -10,6 +8,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (authStore.isAuthenticated) {
-    return navigateTo('/dashboard')
+    return navigateTo('/app/dashboard')
   }
 })

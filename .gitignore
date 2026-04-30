@@ -25,3 +25,5 @@ app/assets/AI/
 .env
 .env.*
 !.env.example
+
+/server/generated/prisma

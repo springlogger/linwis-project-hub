@@ -1,72 +1,110 @@
 import { defineStore } from 'pinia'
-import type { User } from '../../stores/user'
+import { useUserStore, type User } from '../../stores/user'
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(null)
-  const isInitialized = ref(false);
-  const isAuthenticated = computed(() => token.value !== null)
-  const isFetching = ref(false);
+  const user = useUserStore()
 
-  const loadAuthToken = () => {
-    if (!import.meta.client) return;
-    token.value = localStorage.getItem("Authorization");
-  }
+  const isInitialized = ref(false)
+  const isFetching = ref(false)
+
+  const isAuthenticated = computed(() => !user.isEmpty)
 
   const authMe = async () => {
-
     const data = await $fetch<{ user: User }>('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
+      headers: import.meta.server ? useRequestHeaders(['cookie']) : undefined,
     })
 
-    // user.value = data.user
-    return data.user
-
+    user.setUser(data.user)
   }
 
-  const register = async (name:string, email: string, password: string) => {
-    isFetching.value = true;
-    
+  const register = async (name: string, email: string, password: string) => {
+    isFetching.value = true
+
     try {
+      const data = await $fetch<{ user: User }>('/api/auth/register', {
+        method: 'POST',
+        body: {
+          name,
+          email,
+          password,
+        },
+      })
 
-    } catch(e) {
+      user.setUser(data.user)
 
+      await navigateTo('/app/dashboard')
+    } catch (e) {
+      user.clearUser()
+      throw e
     } finally {
-      isFetching.value = false;
+      isFetching.value = false
     }
+  }
+
+  const login = async (email: string, password: string) => {
+    isFetching.value = true
+
+    try {
+      const data = await $fetch<{ user: User }>('/api/auth/login', {
+        method: 'POST',
+        body: {
+          email,
+          password,
+        },
+      })
+
+      user.setUser(data.user)
+
+      await navigateTo('/app/dashboard')
+    } catch (e) {
+      user.clearUser()
+      throw e
+    } finally {
+      isFetching.value = false
+    }
+  }
+
+  const logout = async () => {
+    await $fetch('/api/auth/logout', {
+      method: 'POST',
+    })
+
+    clearAuth()
+
+    await navigateTo('/auth?mode=login')
   }
 
   const initAuth = async () => {
+    if (isInitialized.value) return
+
+    isFetching.value = true
+
     try {
-
-      if (isInitialized.value) return;
-      
-      loadAuthToken();
-
-      if (!token.value) return;
-
-      //TODO: Проверка JWTExpired
-      
-      await authMe();
-
-    } catch (e) {
-      //TODO: Очищаем авторизацию
+      await authMe()
+    } catch {
+      user.clearUser()
     } finally {
-      isInitialized.value = true;
+      isFetching.value = false
+      isInitialized.value = true
     }
   }
 
-  const clearAuth = () => {
-    token.value = null;
+  const clearAuth = async () => {
+    user.clearUser()
+
+    await $fetch("/api/auth/logout")
   }
 
   return {
     isInitialized,
+    isFetching,
     isAuthenticated,
-    token,
 
     initAuth,
     clearAuth,
+    authMe,
+    register,
+    login,
+    logout,
   }
 })
